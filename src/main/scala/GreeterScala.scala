@@ -5,6 +5,12 @@ case object Greet
 case class WhoToGreet(who: String)
 case class Greeting(message: String)
 
+class GreetPrinter extends Actor {
+  def receive = {
+    case Greeting(message) => println(message)
+  }
+}
+
 class Greeter extends Actor {
   var greeting = ""
 
@@ -36,6 +42,17 @@ object GreeterScala extends App {
     // Wait 5 seconds for the reply with the 'greeting' message
     val Greeting(message) = inbox.receive(5.seconds)
     println(s"Greeting: $message")
+
+    // Change the greeting and ask for it again
+    greeter.tell(WhoToGreet("typesafe"), ActorRef.noSender)
+    inbox.send(greeter, Greet)
+    val Greeting(message2) = inbox.receive(5.seconds)
+    println(s"Greeting: $message2")
+
+    val greetPrinter = system.actorOf(Props[GreetPrinter])
+    // after zero seconds, send a Greet message every second to the greeter with a sender of the greetPrinter
+    system.scheduler.schedule(0.seconds, 1.second, greeter, Greet)(system.dispatcher, greetPrinter)
+
   }
 
 }

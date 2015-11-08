@@ -1,2 +1,5 @@
+project
+bin
 target
 .settings
+.cache-main
