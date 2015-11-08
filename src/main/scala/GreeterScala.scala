@@ -27,7 +27,7 @@ object GreeterScala extends App {
     val inbox = Inbox.create(system)
 
     // Tell the 'greeter' to change its 'greeting' message
-    //greeter tell WhoToGreet("akka")
+    greeter ! WhoToGreet(" srini ")
 
     // Ask the 'greeter for the latest 'greeting'
     // Reply should go to the mailbox
